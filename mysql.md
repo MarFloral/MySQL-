@@ -1,0 +1,792 @@
+[TOC]
+
+
+
+# <!--注释-->
+
+1. 本次学习使用的数据库为5.5.40
+2. 【】内的内容表示可以不写
+3. 所有的“……”表示以此类推 或任意个
+4. 此表内的“约束”表示“约束条件”
+5. 例如：【三：5：1）】的表示目录索引
+
+# MySQL
+
+## 	进入数据库
+
+```cmd
+mysql -uroot -p
+```
+
+## 		查看所有数据库
+
+```mysql
+show databases;
+```
+
+## 		一、数据库
+
+### 				1、创建数据库
+
+```mysql
+create database 数据库名;
+```
+
+### 				2、删除数据库
+
+```mysql
+drop database 数据库名;
+```
+
+### 				3、选择数据库
+
+```mysql
+use 数据库名;
+```
+
+## 	二、数据类型
+
+### 		1、数值类型
+
+| ***整数类型***   | ***字节*** | ***范围（有符号）***                                    | ***范围（无符号）***            | ***描述***                                           |
+| ---------------- | ---------- | ------------------------------------------------------- | ------------------------------- | ---------------------------------------------------- |
+| tinyint          | 1字节      | (-128，127)                                             | (0，255)                        | 整型                                                 |
+| smallint         | 2字节      | (-32 768，32 767)                                       | (0，65 535)                     | 整型                                                 |
+| mediumint        | 3字节      | (-8 388 608，8 388 607)                                 | (0，65 535)                     | 整型                                                 |
+| **int或integer** | **4字节**  | **(-2 147 483 648，2 147 483 647)**                     | **(0，4 294 967 295)**          | **整型**                                             |
+| bigint           | 8字节      | (-9 233 372 036 854 775 808，9 223 372 036 854 775 807) | (0，18 446 744 073 709 551 615) | 整型                                                 |
+| **float**        | **4字节**  | ****                                                    | ****                            | **单精度浮点数值**                                   |
+| **double**       | **8字节**  | ****                                                    | ****                            | **双精度浮点数值**                                   |
+| **decimal**      | ****       | ****                                                    | ****                            | **小数，用于精度要求非常高的计算中。（常用于货币）** |
+
+### 		2、字符串类型
+
+| ***字符串类型*** | ***字节大小***      | ***描述及存储需求***                              |
+| ---------------- | ------------------- | ------------------------------------------------- |
+| **char**         | **0-255字节**       | **定长字符串**                                    |
+| **varchar**      | **0-255字节**       | **变长字符串**                                    |
+| tinyblob         | 0-255字节           | 不超过 255 个字符的二进制字符串                   |
+| tinytext         | 0-255字节           | 短文本字符串                                      |
+| blob             | 0-65535字节         | 二进制形式的长文本数据                            |
+| text             | 0-65535字节         | 长文本数据                                        |
+| mediumblob       | 0-16777215字节      | 二进制形式的中等长度文本数据                      |
+| mediumtext       | 0-16777215字节      | 中等长度文本数据                                  |
+| logngblob        | 0-4294967295字节    | 二进制形式的极大文本数据                          |
+| longtext         | 0-4 294 967 295字节 | 极大文本数据                                      |
+| varbinary(m)     |                     | 允许长度0-M个字节的定长字节符串，值的长度+1个字节 |
+| binary(m)        |                     | 允许长度0-M个字节的定长字节符串                   |
+
+### 		3、日期和时间类型
+
+| ***类型*** | ***大小(字节)*** | ***格式***          | ***用途***               |
+| ---------- | ---------------- | ------------------- | ------------------------ |
+| date       | 4                | YYYY-MM-DD          | 日期                     |
+| time       | 3                | HH:MM:SS            | 时间                     |
+| year       | 1                | YYYY                | 年份                     |
+| datetime   | 8                | YYYY-MM-DD HH:MM:SS | 混合日期和时间值         |
+| timestamo  | 4                | YYYYMMDD HHMMSS     | 混合日期和时间值，时间戳 |
+
+## 		三、表
+
+### 				1、查看数据库内的所有表
+
+​		
+
+```mysql
+show tables 【from 数据库名】;
+```
+
+
+
+### 				2、创建表
+
+```mysql
+create table 表名(
+    字段名1 数据类型 【约束】,
+    字段名2 数据类型 【约束】,
+    ……
+    字段名n 数据类型 【约束】
+);
+```
+
+### 				3、删除表
+
+```mysql
+drop table 表名;
+```
+
+### 		4、添加新字段
+
+```mysql
+alter table 表名 add 字段名 数据类型 【约束】;
+```
+
+### 		5、修改字段
+
+<!--注：如果原字段拥有约束，不写约束时将改变该字段的约束-->
+
+#### 					1）重命名
+
+```mysql
+alter table 表名 change 原字段名 新字段名 数据类型 【约束】;
+```
+
+#### 					2）非重命名
+
+```mysql
+alter table 表名 modify 字段名 数据长度 【约束】;
+```
+
+### 		6、删除字段
+
+```mysql
+alter table 表名 drop 字段1,drop 字段2,……；
+```
+
+## 	四、数据库的更新
+
+### 		1、添加数据
+
+```mysql
+insert into 【(字段1,字段2……)】values(值1,值2,……);
+```
+
+<!--注：【】内不写时按创建表的字段顺序逐个添加值-->
+
+### 		2、修改数据
+
+```mysql
+update 表名 set 字段1=值1,字段2=值2,
+```
+
+### 		3、删除数据
+
+```mysql
+delete from 表名 【where 条件】;
+```
+
+<!--注：【】内不加条件时将会把该表数据全部删除-->
+
+## 	五、约束
+
+### 		1、非空约束(not null) NK
+
+创建表时：
+
+```mysql
+create table person(
+    id int(5) not null,
+    name varchar(10) default 0
+);
+```
+
+创建表后：
+
+```mysql
+alter table person modify id int(5) not null;
+```
+
+<!--具体可见：【三：5】-->
+
+### 		2、唯一约束(unique) UK
+
+```mysql
+create table person(
+    id int(5) unique,
+    name varchar(10),
+    constraint uk_name unique(name)
+);
+```
+
+### 		3、主键约束(primary key) PK
+
+```mysql
+create table person(
+    id int(5) primary key,
+    name varchar(10)
+);
+
+create table person(
+    id int(5),
+    name varchar(10),
+    constraint pk_id primary key(id)
+);
+```
+
+​	复合主键：
+
+```mysql
+create table person(
+    id int(5),
+    name varchar(10),
+    constraint pk_id primary key(id，name)
+);
+```
+
+### 		4、检查约束(check) CK
+
+```mysql
+#注：检查约束在旧版MySQL中不能被识别，但不会报错
+create table person(
+    id int(5) primary key,
+    name varchar(10)，
+    gender varchar(3),
+    age int(3),
+    constraint ck_gender check(gender in('男','女')),
+    constraint ck_age check(age between 0 and 120)
+);
+```
+
+
+
+### 		5、外键约束（foreign key）FK
+
+```mysql
+create table person(
+    id int(5) primary key,
+    name varchar(10)
+);
+
+create table person2(
+    uid int(5),
+    name varchar(10),
+    constraint pk_uid primary key(uid)，
+    constraint fk_uid foreign key(uid) references person(id)
+);
+```
+
+#### 			1)级联删除（on delete cascade）
+
+```mysql
+create table person(
+    id int(5) primary key,
+    name varchar(10)
+);
+
+create table person2(
+    uid int(5),
+    name varchar(10),
+    constraint pk_uid primary key(uid)，
+    constraint fk_uid foreign key(uid) references person(id) on delete cascade
+);
+```
+
+
+
+## 	六、数据库查询
+
+测试前置准备：
+
+```mysql
+#创建表DEPT
+create table dept(   
+	deptno mediumint unsigned not null default 0,#部门编号
+	dname varchar(20)  not null  default "",#部门名称
+	loc varchar(13) not null default ""#位置
+) engine=MyISAM default charset=utf8 ; 
+
+#创建表EMP雇员
+create table emp(
+	empno  mediumint default 0,#员工编号
+	ename varchar(20)  default "",#姓名
+	job varchar(9) default "",#职位
+	mgr mediumint,#领导编号
+	hiredate date,#入职时间
+	sal decimal(7,2),#工资
+	comm decimal(7,2),#奖金
+	deptno mediumint default 0#部门编号 
+)engine=MyISAM default charset=utf8 ;
+
+#工资级别表
+create table salgrade(	
+	grade mediumint UNSIGNED not null default 0,  
+	losal decimal(17,2)  not null,  
+	hisal decimal(17,2)  not null	
+)ENGINE=MyISAM default charset=utf8;
+
+#工资级别表  插入数据
+insert into salgrade values (1,700,1200);
+insert into salgrade values (2,1201,1400);
+insert into salgrade values (3,1401,2000);
+insert into salgrade values (4,2001,3000);
+insert into salgrade values (5,3001,9999);
+
+#员工表  插入数据
+insert into EMP (empno, ename, job, mgr, hiredate, sal, comm, deptno) 
+values (7369, 'SMITH', 'CLERK', 7902, '1980-12-17', 800, null, 20);
+insert into EMP (empno, ename, job, mgr, hiredate, sal, comm, deptno)
+values (7499, 'ALLEN', 'SALESMAN', 7698, '1981-02-20', 1600, 300, 30);
+insert into EMP (empno, ename, job, mgr, hiredate, sal, comm, deptno)
+values (7521, 'WARD', 'SALESMAN', 7698, '1981-02-22', 1250, 500, 30);
+insert into EMP (empno, ename, job, mgr, hiredate, sal, comm, deptno)
+values (7566, 'JONES', 'MANAGER', 7839, '1981-04-02', 2975, null, 20);
+insert into EMP (empno, ename, job, mgr, hiredate, sal, comm, deptno)
+values (7654, 'MARTIN', 'SALESMAN', 7698, '1981-09-28', 1250, 1400, 30);
+insert into EMP (empno, ename, job, mgr, hiredate, sal, comm, deptno)
+values (7698, 'BLAKE', 'MANAGER', 7839, '1981-05-01', 2850, null, 30);
+insert into EMP (empno, ename, job, mgr, hiredate, sal, comm, deptno)
+values (7782, 'CLARK', 'MANAGER', 7839, '1981-06-09', 2450, null, 10);
+insert into EMP (empno, ename, job, mgr, hiredate, sal, comm, deptno)
+values (7788, 'SCOTT', 'ANALYST', 7566, '1987-04-19', 3000, null, 20);
+insert into EMP (empno, ename, job, mgr, hiredate, sal, comm, deptno)
+values (7839, 'KING', 'PRESIDENT', null, '1981-11-17', 5000, null, 10);
+insert into EMP (empno, ename, job, mgr, hiredate, sal, comm, deptno)
+values (7844, 'TURNER', 'SALESMAN', 7698, '1981-09-08', 1500, 0, 30);
+insert into EMP (empno, ename, job, mgr, hiredate, sal, comm, deptno)
+values (7876, 'ADAMS', 'CLERK', 7788, '1987-05-23', 1100, null, 20);
+insert into EMP (empno, ename, job, mgr, hiredate, sal, comm, deptno)
+values (7900, 'JAMES', 'CLERK', 7698, '1981-12-03', 950, null, 30);
+insert into EMP (empno, ename, job, mgr, hiredate, sal, comm, deptno)
+values (7902, 'FORD', 'ANALYST', 7566, '1981-12-03', 3000, null, 20);
+insert into EMP (empno, ename, job, mgr, hiredate, sal, comm, deptno)
+values (7934, 'MILLER', 'CLERK', 7782, '1982-01-23', 1300, null, 10);
+
+#部门表  插入数据
+insert into DEPT (deptno, dname, loc)
+values (10, 'ACCOUNTING', 'NEW YORK');
+insert into DEPT (deptno, dname, loc)
+values (20, 'RESEARCH', 'DALLAS');
+insert into DEPT (deptno, dname, loc)
+values (30, 'SALES', 'CHICAGO');
+insert into DEPT (deptno, dname, loc)
+values (40, 'OPERATIONS', 'BOSTON');	
+```
+
+### 		1、简单查询
+
+#### 			1）语法
+
+```mysql
+# distinct 消除重复值
+select 【distinct】*|字段1 【别名】,字段2 【别名】,…… from 表名;
+#例：
+select * from emp;
+```
+
+#### 			2）实例：
+
+1.  查询emp表中所有员工的编号，姓名，职位
+
+    ```mysql
+    select empno,ename,job from emp;
+    #查询的时候可以指定查询的返回列的名称。 即为列起一个别名
+    select empno eno,ename en,job j from emp;
+    ```
+
+2.  查询emp表中所有员工的职位
+
+    ```mysql
+    select job from emp;
+    #消除重复列
+    select distinct job from emp;
+    ```
+
+3.  查询emp表中每个员工的姓名和年薪
+
+    ```mysql
+    select ename,sal*12 from emp;
+    ```
+
+### 		2、限定查询（where）
+
+#### 			1）语法
+
+```mysql
+select [distinct] * | 字段1 别名，字段2 别名...  from 表名
+[where 条件]
+#在where后，可以添加多个条件，最常见的条件是：>,<,>=,<=,!=(或<>) between...and,like,is null,and,or,not,in
+#
+```
+
+#### 			2）实例：
+
+1.  查询出工资大于1500的所有员工的信息。
+
+    ```mysql
+    select * from emp where sal>1500;
+    ```
+
+2.  查询出工资大于（等于）1500并且小于（等于）3000的所有员工的信息
+
+    ```mysql
+    select * from emp where sal>1500 and sal<3000;
+    select * from emp where sal between 1500 and 3000;
+    ```
+
+3.  查询每个月可以获得奖金的员工
+
+    ```mysql
+    select * from emp where comm is not null and comm>0;
+    ```
+
+4.  查询没有奖金的员工
+
+    ```mysql
+    select * from emp where comm is null or comm=0;
+    ```
+
+5.  查询出，基本工资大于1500，同时可以领取奖金的人
+
+    ```mysql
+    select *from emp where sal>1500 and comm>0;
+    ```
+
+6.  查询出，基本工资不大于1500，同时不可以领取奖金的人
+
+    ```mysql
+    select * from emp where sal<=1500 and (comm=0 or comm is null);
+    select * from emp where not(sal>1500 and comm>0);
+    ```
+
+7.  查询出在1981年雇佣的员工信息
+
+    ```mysql
+    select * from emp where hiredate between '1981-1-1' and '1981-12-31';
+    ```
+
+8.  查询员工姓名为SMITH的员工
+
+    ```mysql
+    select * from emp where name='SMITH';
+    ```
+
+9.  查询出员工编号是7369，7698，7876的员工
+
+    ```mysql
+    select * from emp where empno=7369 or empno=7698 or empno=7976;
+    select * from emp where empno in(7369,7698,7876);
+    ```
+    
+10.  模糊查询
+
+     ```mysql
+     #通配符:%(匹配任意长度)    _(匹配一个长度)
+     #查询出员姓名第二个字母包含L的员工信息
+     select *from emp where ename like '_L%';
+     #查询出员姓名包含M的员工信息
+     select *from emp where ename like '%M%';
+     #查询出在1981年雇佣的员工信息
+     select * from emp where hiredate like '%81%';
+     ```
+
+11.  员工编号不等于7369的员工
+
+     ```mysql
+     select * from emp where empno !=7369;
+     select * from emp where empno <>7369;
+     ```
+
+
+### 		3、查询排序(order by)
+
+#### 			1）语法
+
+```mysql
+select 【 distinct】*|字段1 别名,字段2 别名,…… from 表名 别名
+【 where 条件】 order by 字段1 asc,字段2 desc,……;
+#	asc :升序 从低到高 (默认)
+# 	desc :降序 从高到低
+#	多字段排序，后续字段只在前一字段的值相同时发挥作用
+```
+
+#### 			2）实例：
+
+```mysql
+select * from emp order by sal desc;
+#查询出20部门的员工，查询的信息按照工资由高到低排序，如果工资相等，则按照雇佣日期由早到晚排序
+select * from emp where deptno=20 order by sal desc,hiredate asc;
+```
+
+### 		4、多表查询
+
+#### 			1）语法
+
+```mysql
+select 【 distinct】*|字段1 别名,字段2 别名,…… from 表名1 别名,表名2 别名 【 where 条件】 order by 字段1 asc,字段2 desc,……;
+
+#	在多表查询中，不同的表有相同的名称时，访问这个字段，必须加上表名。
+SELECT * FROM emp,dept WHERE emp.deptno = dept.deptno;
+#	可以使用起别名形式
+SELECT * FROM emp  e,dept d WHERE e.deptno = d.deptno;
+#	或者
+SELECT * FROM emp as e,dept as d WHERE e.deptno = d.deptno;
+```
+
+#### 			2）实例：
+
+1.  查询每一位员工的编号，姓名，职位，部门名称，部门位置
+
+    ```mysql
+    #分析：需要两张emp表，dept表
+    #确定需要查询的表：
+    	emp e1,emp e2,dept d
+    #确定需要查询的数据：
+    	e1.empno,e1.ename,e1.sal,e1.job,e2.ename,d.dname,d.loc
+    #确定关联的字段
+    	e1.mgr = e2.empno AND e1.deptno = d.deptno
+    
+    select e.empno,e.ename,e.job,d.dname,d.loc from emp e,dept d where e.deptno=d.deptno;
+    ```
+
+2.  查询每一位员工的姓名，职位，领导的姓名
+
+    ```mysql
+    #分析：需要两张emp表
+    #确定需要查询的表：
+    	emp e1,emp e2
+    #确定需要查询的数据：
+    	e1.ename,e1.job,e2.ename
+    #确定关联的字段
+    	e1.mgr = e2.empno
+    	
+    select e1.ename,e1.job,e2.ename from emp e1,emp e2 where e1.mgr=e2.empno;
+    ```
+
+3.  查询每个员工的编号，姓名，基本工资，职位，领导的姓名，部门名称，位置
+
+    ```mysql
+    #分析：需要两张emp表，dept表
+    #(1)确定需要查询的表：
+    	emp e1,emp e2,dept d
+    #(2)确定需要查询的数据：
+    	e1.empno,e1.ename,e1.sal,e1.job,e2.ename,d.dname,d.loc
+    #(3)确定关联的字段
+     	e1.mgr = e2.empno AND e1.deptno = d.deptno
+     	
+     select e1.empno,e1.ename,e1.sal,e1.job,e2.ename,d.dname,d.loc from emp e1,emp e2,dept d where e1.mgr = e2.empno and e1.deptno = d.deptno;
+    ```
+
+4.  查询每个员工的编号，姓名，工资，部门名称，工资所在公司的工资等级
+
+    ```mysql
+    #分析：需要两张emp表，dept表，salgrade表
+    #(1)确定需要查询的表：
+    	emp e,dept d,salgrade s
+    #(2)确定需要查询的数据：
+    	e.empno,e.ename,e.sal,d.dname,s.grade
+    #(3)确定关联的字段
+    	e.deptno = d.deptno AND e.sal BETWEEN s.losal AND s.hisal
+    	
+    select e.empno,e.ename,e.sal,d.dname,s.grade from emp e,dept d,salgrade s where e.deptno = d.deptno and e.sal between s.losal and s.hisal;
+    
+    ```
+
+#### 3）左右连接
+
+```mysql
+#语法：
+	主表 left outer join 次表 on #左连接
+	次表 right outer join 主表 on #右连接
+#实例：
+select * from emp left outer join dept on(emp.deptno=dept.deptno);
+select * from emp right outer join dept on(emp.deptno=dept.deptno);
+
+#其他连接(了解)
+cross join 交叉连接 ：产生笛卡尔积
+select * from emp cross join dept;
+natural join 自然连接：自动关联相关联的字段，消除笛卡尔积
+select * from emp natural join dept;
+join...using 用户指定一个字段消除笛卡尔积
+select * from emp join dept using(deptno);
+join...on 指定一个条件消除笛卡尔积
+select * from emp join dept ON(emp.deptno=dept.deptno);
+```
+
+
+
+### 		5、统计函数
+
+#### 			1）语法
+
+```mysql
+count(字段) #统计表中的记录数
+avg(字段) #求平均值
+sum(字段) #求和
+max(字段) #求最大值
+min(字段) #求最小值
+```
+
+#### 			2）实例：
+
+```mysql
+#统计出公司所有员工的每个月平均工资和总工资
+select count(empno),sum(sal),avg(sal) from emp;
+#统计员工的最高工资和最低工资
+select max(sal),min(sal) from emp;
+```
+
+### 		6、分组查询(group by)
+
+#### 			1）语法
+
+```mysql
+select 【 distinct】 *|字段1 别名，字段2 别名...FROM 表名1 别名,表名2 别名
+[where 条件]
+group by 字段1，字段2...
+having 条件（分组之后过滤条件）
+order by 字段1 asc,字段2 desc...;
+```
+
+#### 			2）实例：
+
+显示非销售人员的工作名称，以及从事同一工作的工资的总和，并满足从事同一工作的员工的工资总和大于等于5000，结果按照工资总和的降序排列
+
+```mysql
+#显示所有的非销售人员。
+select * from emp where job<> 'SALESMAN';
+#按照职位分组，并统计出每个职位的工资总和。
+select job,sum(sal) from emp where job<>'SALESMAN' group by job;
+#过滤工资总和小于5000的职位
+select job,sum(sal) from emp where job<>'SALESMAN' group by job having sum(sal)>=5000;
+#按照要求进行降序排列
+select job,sum(sal) s from emp where job<>'SALESMAN' group by job having sum(sal)>=5000 order by s desc;
+```
+
+### 		7、子查询
+
+#### 			1）实例：
+
+1.  单行单列：
+
+    查询比SMITH工资高的人
+
+    ```mysql
+    #1.查询SMITH的工资
+    select sal from emp where ename='SMITH';
+    #2.查出比SIMTH工资高的人
+    select * from emp where sal>(select sal from emp where ename='SMITH');
+    ```
+
+    查询工资高于平均工资的员工信息
+
+    ```mysql
+    #1.查询平均工资
+    select avg(sal) from emp; 
+    #2.查询高于平均工资的员工
+    select * from emp where sal>(select avg(sal) from emp);
+    ```
+
+2.  单行多列（一般少用）：
+
+    ```mysql
+    select * from emp where (job,ename)=(select job,ename from emp where ename='SMITH');
+    ```
+
+3.  多行单列:
+
+    ```mysql
+    select sal from emp where job = 'MANAGER';
+    select * from emp where sal in (select sal from emp where job = 'MANAGER');
+    select * from emp where sal not in (select sal from emp where job = 'MANAGER');
+    
+    #ANY 三种匹配形式
+    #=ANY  功能和IN一样
+    select * from emp where sal = any(select sal from emp where job = 'MANAGER');
+    #>ANY 比最小值大的数据
+    select * from emp where sal= any(select sal from emp where job = 'MANAGER');
+    #<ANY 比最大值小的数据
+    select * from emp where sal < any(select sal from emp where job = 'MANAGER');
+    #ALL 两种形式
+    #> ALL 比最大值大
+    select * from emp where sal > all(select sal from emp where job = 'MANAGER');
+    #< ALL 比最小值小
+    select * from emp where sal < all(select sal from emp where job = 'MANAGER');
+    ```
+
+4.  from 多行多列
+
+    查询每个部门的编号，名称，位置，部门的人数，平均工资(第三步为最终结果)
+
+    ```mysql
+    	#1.查处部门表中的信息
+    select d.deptno,d.dname,d.loc from dept d;
+    	#2.查询部门人数和平均工资 emp
+    select deptno,count(empno),avg(sal) from emp e group by deptno;
+    	#3.完成相关联操作
+    select d.deptno,d.dname,d.loc,temp.c,temp.a  from dept d,(select deptno,count(empno) c,avg(sal) a from emp e group by deptno) temp where d.deptno = temp.deptno;
+    	#4.显示结果没有40部门，使用左右连接解决。
+    select d.deptno,d.dname,d.loc,temp.c,temp.a  from dept d left outer join (select deptno,count(empno) c,avg(sal) a from emp e group by deptno) temp on ( d.deptno=temp.deptno);
+    ```
+
+## 	七、MySQL函数
+
+### 	1、字符函数
+
+#### 		1）常用：
+
+```mysql
+#1）将字符串转化为大写返回
+	upper(字符串|字段) 
+#2）将字符串转化为小写返回
+	lower(字符串|字段) 
+#3）求字符串的长度。
+	length(字符串|字段) 
+#4）替换字符串
+	replace(字符串|字段,oldstr,newstr) 
+#5）截取字符串
+	substr(字符串|字段,开始点，截取长度)
+#6）连接多个字符串成为一个字符串
+	concat(str1,str2,...) 
+		#返回来自于参数连结的字符串。如果任何参数是NULL，返回NULL。可以有超过2个的参数。一个数字参数被变换为等价的字符串形式。
+	locate(substr，str)
+		#返回子串substr在字符串str第一个出现的位置，如果substr不是在str里面，返回0.
+	locate(substr,str,pos) 
+		#返回子串substr在字符串str第一个出现的位置，从位置pos开始。如果substr不是在str里面，返回0。
+#7）字符串填充
+	lpad(str,len,padstr) 
+        #返回字符串str，左面用字符串padstr填补直到str是len个字符长。
+	rpad(str,len,padstr) 
+		#返回字符串str，右面用字符串padstr填补直到str是len个字符长。   
+#8）返回字符串str的最左面len个字符
+	left(str,len) 
+#9）返回字符串str的最右面len个字符
+	right(str,len) 
+#10)删除空格或指定字符
+	ltrim(str) 
+		#返回删除了其前置空格字符的字符串str。 
+	rtrim(str) 
+		#返回删除了其拖后空格字符的字符串str
+	trim(【【 both(默认两边)| leading(左)| trailing(右)】 【 remstr(不写则删除空格)】 from】 str)
+		#返回字符串str，其所有remstr前缀或后缀被删除了。如果没有修饰符 both,leading或 trailing给出，。如果remstr没被指定，空格被删除。
+#11)返回颠倒字符顺序的字符串str
+	reverse(str)
+```
+
+#### 		2）不常用或功能重复：
+
+```mysql
+#1）返回字符串str的最左面字符的ASCII代码值
+	ascii(str)
+		#如果str是空字符串，返回0。如果str是NULL，返回NULL
+#2）返回子串substr在字符串str中的第一个出现的位置
+									#(类似【七：1)：#6)：locate】)
+	instr(str,substr)
+		#这与有2个参数形式的LOCATE()相同,除了参数被颠倒
+#3）截取子串
+	substring(str,pos,len) （5类似）
+		#从字符串str返回一个len个字符的子串，从位置pos开始。
+	substring(str,pos) 　 
+	substring(str from pos) 
+		#从字符串str的起始位置pos返回一个子串。 
+	substring_index(str,delim,count) 
+		#返回从字符串str的第count个出现的分隔符delim之后的子串。如果count是正数，返回最后的分隔符到左边(从左边数) 的所有字符。如果count是负数，返回最后的分隔符到右边的所有字符(从右边数)。
+#4）返回由N个空格字符组成的一个字符串
+	space(N)
+#5）返回字符串str，其字符串from_str的所有出现由字符串to_str代替
+	replace(str,from_str,to_str)
+#6）重复count次字段输出
+	repeat(str,count)
+		#返回由重复countTimes次的字符串str组成的一个字符串。如果count <= 0，返回一个空字符串。如果str或count是null，返回null
+#7）返回字符串str，将从pos位置开始，len个字符长的子串代替为字符串newstr
+	insert(str,pos,len,newstr)
+#8）如果N=1，返回str1，如果N=2，返回str2...如果N小于1或大于参数个数，返回null，elt()是fielt()反运算
+	elt（N,str1,str2,...）
+#9）返回str在str1, str2, str3, ...清单的索引。如果str没找到，返回0。fielt()是elt()反运算
+	fielt（str,str1,str2,...）
+```
+
+#### 	3）实例：
+
+### 	2、3、4、5、6、
+
+## 	八、
