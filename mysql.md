@@ -463,8 +463,10 @@ select [distinct] * | 字段1 别名，字段2 别名...  from 表名
      #通配符:%(匹配任意长度)    _(匹配一个长度)
      #查询出员姓名第二个字母包含L的员工信息
      select *from emp where ename like '_L%';
+     
      #查询出员姓名包含M的员工信息
      select *from emp where ename like '%M%';
+     
      #查询出在1981年雇佣的员工信息
      select * from emp where hiredate like '%81%';
      ```
@@ -493,6 +495,7 @@ select 【 distinct】*|字段1 别名,字段2 别名,…… from 表名 别名
 
 ```mysql
 select * from emp order by sal desc;
+
 #查询出20部门的员工，查询的信息按照工资由高到低排序，如果工资相等，则按照雇佣日期由早到晚排序
 select * from emp where deptno=20 order by sal desc,hiredate asc;
 ```
@@ -506,8 +509,10 @@ select 【 distinct】*|字段1 别名,字段2 别名,…… from 表名1 别名
 
 #	在多表查询中，不同的表有相同的名称时，访问这个字段，必须加上表名。
 SELECT * FROM emp,dept WHERE emp.deptno = dept.deptno;
+
 #	可以使用起别名形式
 SELECT * FROM emp  e,dept d WHERE e.deptno = d.deptno;
+
 #	或者
 SELECT * FROM emp as e,dept as d WHERE e.deptno = d.deptno;
 ```
@@ -520,8 +525,10 @@ SELECT * FROM emp as e,dept as d WHERE e.deptno = d.deptno;
     #分析：需要两张emp表，dept表
     #确定需要查询的表：
     	emp e1,emp e2,dept d
+    	
     #确定需要查询的数据：
     	e1.empno,e1.ename,e1.sal,e1.job,e2.ename,d.dname,d.loc
+    	
     #确定关联的字段
     	e1.mgr = e2.empno AND e1.deptno = d.deptno
     
@@ -534,8 +541,10 @@ SELECT * FROM emp as e,dept as d WHERE e.deptno = d.deptno;
     #分析：需要两张emp表
     #确定需要查询的表：
     	emp e1,emp e2
+    	
     #确定需要查询的数据：
     	e1.ename,e1.job,e2.ename
+    	
     #确定关联的字段
     	e1.mgr = e2.empno
     	
@@ -548,8 +557,10 @@ SELECT * FROM emp as e,dept as d WHERE e.deptno = d.deptno;
     #分析：需要两张emp表，dept表
     #(1)确定需要查询的表：
     	emp e1,emp e2,dept d
+    	
     #(2)确定需要查询的数据：
     	e1.empno,e1.ename,e1.sal,e1.job,e2.ename,d.dname,d.loc
+    	
     #(3)确定关联的字段
      	e1.mgr = e2.empno AND e1.deptno = d.deptno
      	
@@ -562,8 +573,10 @@ SELECT * FROM emp as e,dept as d WHERE e.deptno = d.deptno;
     #分析：需要两张emp表，dept表，salgrade表
     #(1)确定需要查询的表：
     	emp e,dept d,salgrade s
+    	
     #(2)确定需要查询的数据：
     	e.empno,e.ename,e.sal,d.dname,s.grade
+    	
     #(3)确定关联的字段
     	e.deptno = d.deptno AND e.sal BETWEEN s.losal AND s.hisal
     	
@@ -577,6 +590,7 @@ SELECT * FROM emp as e,dept as d WHERE e.deptno = d.deptno;
 #语法：
 	主表 left outer join 次表 on #左连接
 	次表 right outer join 主表 on #右连接
+	
 #实例：
 select * from emp left outer join dept on(emp.deptno=dept.deptno);
 select * from emp right outer join dept on(emp.deptno=dept.deptno);
@@ -611,6 +625,7 @@ min(字段) #求最小值
 ```mysql
 #统计出公司所有员工的每个月平均工资和总工资
 select count(empno),sum(sal),avg(sal) from emp;
+
 #统计员工的最高工资和最低工资
 select max(sal),min(sal) from emp;
 ```
@@ -634,10 +649,13 @@ order by 字段1 asc,字段2 desc...;
 ```mysql
 #显示所有的非销售人员。
 select * from emp where job<> 'SALESMAN';
+
 #按照职位分组，并统计出每个职位的工资总和。
 select job,sum(sal) from emp where job<>'SALESMAN' group by job;
+
 #过滤工资总和小于5000的职位
 select job,sum(sal) from emp where job<>'SALESMAN' group by job having sum(sal)>=5000;
+
 #按照要求进行降序排列
 select job,sum(sal) s from emp where job<>'SALESMAN' group by job having sum(sal)>=5000 order by s desc;
 ```
@@ -653,6 +671,7 @@ select job,sum(sal) s from emp where job<>'SALESMAN' group by job having sum(sal
     ```mysql
     #1.查询SMITH的工资
     select sal from emp where ename='SMITH';
+    
     #2.查出比SIMTH工资高的人
     select * from emp where sal>(select sal from emp where ename='SMITH');
     ```
@@ -662,6 +681,7 @@ select job,sum(sal) s from emp where job<>'SALESMAN' group by job having sum(sal
     ```mysql
     #1.查询平均工资
     select avg(sal) from emp; 
+    
     #2.查询高于平均工资的员工
     select * from emp where sal>(select avg(sal) from emp);
     ```
@@ -679,16 +699,22 @@ select job,sum(sal) s from emp where job<>'SALESMAN' group by job having sum(sal
     select * from emp where sal in (select sal from emp where job = 'MANAGER');
     select * from emp where sal not in (select sal from emp where job = 'MANAGER');
     
+    
+    
     #ANY 三种匹配形式
     #=ANY  功能和IN一样
     select * from emp where sal = any(select sal from emp where job = 'MANAGER');
+    
     #>ANY 比最小值大的数据
     select * from emp where sal= any(select sal from emp where job = 'MANAGER');
+    
     #<ANY 比最大值小的数据
     select * from emp where sal < any(select sal from emp where job = 'MANAGER');
+    
     #ALL 两种形式
     #> ALL 比最大值大
     select * from emp where sal > all(select sal from emp where job = 'MANAGER');
+    
     #< ALL 比最小值小
     select * from emp where sal < all(select sal from emp where job = 'MANAGER');
     ```
@@ -700,10 +726,13 @@ select job,sum(sal) s from emp where job<>'SALESMAN' group by job having sum(sal
     ```mysql
     	#1.查处部门表中的信息
     select d.deptno,d.dname,d.loc from dept d;
+    
     	#2.查询部门人数和平均工资 emp
     select deptno,count(empno),avg(sal) from emp e group by deptno;
+    
     	#3.完成相关联操作
     select d.deptno,d.dname,d.loc,temp.c,temp.a  from dept d,(select deptno,count(empno) c,avg(sal) a from emp e group by deptno) temp where d.deptno = temp.deptno;
+    
     	#4.显示结果没有40部门，使用左右连接解决。
     select d.deptno,d.dname,d.loc,temp.c,temp.a  from dept d left outer join (select deptno,count(empno) c,avg(sal) a from emp e group by deptno) temp on ( d.deptno=temp.deptno);
     ```
@@ -717,76 +746,355 @@ select job,sum(sal) s from emp where job<>'SALESMAN' group by job having sum(sal
 ```mysql
 #1）将字符串转化为大写返回
 	upper(字符串|字段) 
+	
 #2）将字符串转化为小写返回
 	lower(字符串|字段) 
-#3）求字符串的长度。
+	
+#3）求字符串的长度
 	length(字符串|字段) 
+	
 #4）替换字符串
-	replace(字符串|字段,oldstr,newstr) 
+	replace(字符串|字段,旧字符串,新字符串) 
+	
 #5）截取字符串
-	substr(字符串|字段,开始点，截取长度)
+	substr(字符串|字段,开始点【，截取长度(不写默认全部)】)
+	
 #6）连接多个字符串成为一个字符串
-	concat(str1,str2,...) 
-		#返回来自于参数连结的字符串。如果任何参数是NULL，返回NULL。可以有超过2个的参数。一个数字参数被变换为等价的字符串形式。
-	locate(substr，str)
-		#返回子串substr在字符串str第一个出现的位置，如果substr不是在str里面，返回0.
-	locate(substr,str,pos) 
-		#返回子串substr在字符串str第一个出现的位置，从位置pos开始。如果substr不是在str里面，返回0。
-#7）字符串填充
-	lpad(str,len,padstr) 
-        #返回字符串str，左面用字符串padstr填补直到str是len个字符长。
-	rpad(str,len,padstr) 
-		#返回字符串str，右面用字符串padstr填补直到str是len个字符长。   
-#8）返回字符串str的最左面len个字符
+	#返回来自于参数连结的字符串。如果任何参数是NULL，返回NULL。可以有超过2个的参数。一个数字参数被变换为等价的字符串形式。
+		concat(字符串|字段1,字符串|字段2,...) 
+		
+		
+#7）#从指定位置开始，返回子串在字符串或字段中第一个出现的位置，如果子串不在其中，返回0.	
+	locate(子串，字符串|字段,【位置(不写默认从头)】) 
+
+#8）字符串填充
+	#返回字符串或字段，在左侧用填补字符串填补直到该字符串的长度为总长。
+		lpad(字符串|字段,总长,填补字符串) 
+    #返回字符串或字段，在右侧用填补字符串填补直到该字符串的长度为总长。   
+		rpad(字符串|字段,总长,填补字符串) 
+		
+#9）返回字符串str的最左面len个字符
 	left(str,len) 
-#9）返回字符串str的最右面len个字符
+	
+#10）返回字符串str的最右面len个字符
 	right(str,len) 
-#10)删除空格或指定字符
-	ltrim(str) 
-		#返回删除了其前置空格字符的字符串str。 
-	rtrim(str) 
-		#返回删除了其拖后空格字符的字符串str
-	trim(【【 both(默认两边)| leading(左)| trailing(右)】 【 remstr(不写则删除空格)】 from】 str)
-		#返回字符串str，其所有remstr前缀或后缀被删除了。如果没有修饰符 both,leading或 trailing给出，。如果remstr没被指定，空格被删除。
-#11)返回颠倒字符顺序的字符串str
+	
+#11)删除空格或指定字符
+	#返回删除了其前置空格字符的字符串str 
+		ltrim(str) 
+	#返回删除了其拖后空格字符的字符串str	
+		rtrim(str) 
+	#返回字符串str，其所有remstr前缀或后缀被删除了。如果没有修饰符both,leading或 trailing给出，。如果remstr没被指定，空格被删除。	
+		trim(【【 both(默认两边)| leading(左)| trailing(右)】        【remstr(不写则删除空格)】 from】 str)
+		
+#12)颠倒字符串str的顺序
 	reverse(str)
 ```
 
-#### 		2）不常用或功能重复：
+#### 		2）不常用或功能重复(了解)：
 
 ```mysql
-#1）返回字符串str的最左面字符的ASCII代码值
-	ascii(str)
-		#如果str是空字符串，返回0。如果str是NULL，返回NULL
+#1）返回字符串str的最左侧字符的ASCII代码值
+	#如果str是空字符串，返回0。如果str是NULL，返回NULL
+		ascii(str)
+		
 #2）返回子串substr在字符串str中的第一个出现的位置
-									#(类似【七：1)：#6)：locate】)
-	instr(str,substr)
-		#这与有2个参数形式的LOCATE()相同,除了参数被颠倒
+									#(类似【七：1)：#7)：locate】)
+	#这与有2个参数形式的LOCATE()相同,除了参数被颠倒
+		instr(str,substr)
+		
 #3）截取子串
-	substring(str,pos,len) （5类似）
-		#从字符串str返回一个len个字符的子串，从位置pos开始。
-	substring(str,pos) 　 
-	substring(str from pos) 
-		#从字符串str的起始位置pos返回一个子串。 
-	substring_index(str,delim,count) 
-		#返回从字符串str的第count个出现的分隔符delim之后的子串。如果count是正数，返回最后的分隔符到左边(从左边数) 的所有字符。如果count是负数，返回最后的分隔符到右边的所有字符(从右边数)。
+									#(类似【七：1)：#5)：locate】)
+	#从字符串str返回一个len个字符的子串，从位置pos开始。
+		substring(str,pos,len) （5类似）
+	#从字符串str的起始位置返回一个子串	
+		substring(str,起始位置) 
+		substring(str from 起始位置) 
+	#返回从字符串str的第c个出现的分隔符之后的子串。如果c是正数，返回最后的分隔符到左边(从左边数) 的所有字符。如果c是负数，返回最后的分隔符到右边的所有字符(从右边数)
+		substring_index(str,分隔符,c) 
+		
 #4）返回由N个空格字符组成的一个字符串
 	space(N)
-#5）返回字符串str，其字符串from_str的所有出现由字符串to_str代替
-	replace(str,from_str,to_str)
-#6）重复count次字段输出
-	repeat(str,count)
-		#返回由重复countTimes次的字符串str组成的一个字符串。如果count <= 0，返回一个空字符串。如果str或count是null，返回null
+	
+#5）返回字符串str，其字符串fromstr的所有出现由字符串tostr代替
+	replace(str,fromstr,tostr)
+	
+#6）重复c次字段输出
+	#如果c <= 0，返回一个空字符串。如果str或c是null，返回null
+		repeat(str,c)
+		
 #7）返回字符串str，将从pos位置开始，len个字符长的子串代替为字符串newstr
 	insert(str,pos,len,newstr)
-#8）如果N=1，返回str1，如果N=2，返回str2...如果N小于1或大于参数个数，返回null，elt()是fielt()反运算
+	
+#8）如果N=1，返回str1，如果N=2，返回str2...如果N小于1或大于参数个数，返回null
+											#elt()是fielt()反运算
 	elt（N,str1,str2,...）
-#9）返回str在str1, str2, str3, ...清单的索引。如果str没找到，返回0。fielt()是elt()反运算
+	
+#9）返回str在str1, str2, str3, ...清单的索引。如果str没找到，返回0
+											#fielt()是elt()反运算
 	fielt（str,str1,str2,...）
 ```
 
 #### 	3）实例：
 
-### 	2、3、4、5、6、
+```mysql
+#1）将字符串转化为大写返回
+	select upper('asd');
+	select upper(ename) from emp;
+	
+#2）将字符串转化为小写返回
+	select lower('asD');
+	select lower(ename) from emp;
+	
+#3）求字符串或字段的长度
+	select length('asD');
+	select length(ename) from emp;
+	
+#4）替换字符串[replace(字符串|字段,旧字符串,新字符串)]
+	#将字符串ename中的所有a替换为-
+	select replace('ename','a','-');
+	#将表emp中的字段ename中的所有字符串中的A替换为_
+	select replace(ename,'A','_') from emp;
+	
+#5）截取字符串[substr(字符串|字段,开始点【，截取长度】)]
+		select substr('ename',1,3);
+		select substr(ename,1,3) from emp;
+	截取员工名称的后三位
+		select substr(ename,length(ename)-2) from emp;
+		select substr(ename,-3) from emp;
+	
+#6）连接多个字符串成为一个字符串
+	select concat(ename,empno) from emp;
+	select concat('ename','empno');
+	
+#7）#从指定位置开始，返回子串在字符串或字段中第一个出现的位置，如果子串不在其中，返回0.[locate(子串，字符串|字段,【位置(不写默认从头)】)]
+	select locate('ab','bab123ab',2);
+	
+#8）字符串填充[lpad|rpad(字符串|字段,总长,填补字符串)]
+	select lpad('12',5,'abcdef');
+	select rpad('12',5,'abcdef');
+	
+#9）返回字符串str的最左面len个字符[left(str,len)]
+	select left('123456789',5);
+		
+#10）返回字符串str的最右面len个字符[right(str,len)]
+	select right('123456789',5);
+	
+#11)删除空格或指定字符
+	#ltrim|rtrim(str)trim(【【 both(默认两边)| leading(左)| trailing(右)】 【remstr(不写则删除空格)】 from】 str)
+	select ltrim('   123456   ');
+	select trim( both 'a' from 'a123456a');
+	
+#12)返回颠倒字符顺序的字符串str
+	select reverse(ename) from emp;
+```
+
+
+
+### 	2、数字函数
+
+#### 	语法
+
+```mysql
+#四舍五入
+	round(数字|列，【保留小数】)
+
+#取模，求余数
+	mod(数1,数2)
+
+#求绝对值
+	abs(数字|列)
+
+#返回参数的符号，为-1、0或1，取决于X是否是负数、零或正数
+	sign(x)
+
+#向下取整 返回不大于X的最大整数值
+	floor(X)
+
+#向上取整 返回不小于X的最小整数值
+	ceiling(X)
+
+#截断小数
+	truncate(X,D) 
+		#返回数字X，截断为D位小数。如果D为0，结果将没有小数点或小数部分
+```
+
+#### 	实例
+
+```mysql
+#四舍五入			round(数字|列，【保留小数】)
+
+#取模，求余数		mod(数1,数2)
+
+#求绝对值		abs(数字|列)
+
+#返回参数的符号，为-1、0或1，取决于X是否是负数、零或正数		sign(x)
+
+#向下取整	floor(X)
+
+#向上取整	ceiling(X)
+
+#截断小数	truncate(X,D)
+
+```
+
+
+
+### 	3、日期和时间
+
+#### 	语法
+
+```mysql
+#以'YYYY-MM-DD HH:MM:SS'或YYYYMMDDHHMMSS格式返回当前的日期和时间
+	now() 
+		#取决于函数是在一个字符串还是在数字的上下文被使用
+		#sysdate()获取系统时间
+
+#以'YYYY-MM-DD'或YYYYMMDD格式返回今天日期值
+ 	curdate()
+ 	#取决于函数是在一个字符串还是数字上下文被使用
+
+#以'HH:MM:SS'或HHMMSS格式返回当前时间值
+	curtime() 
+		#取决于函数是在一个字符串还是在数字的上下文被使用
+
+#返回日期date的星期索引
+	dayofweek(date) 
+		#1=星期天，2=星期一, ……7=星期六
+		
+#返回date的星期索引
+	weekday(date) 
+		#0=星期一，1=星期二, ……6= 星期天
+
+#返回date的月份中日期，在1到31范围内
+	dayofmonth(date)
+
+#返回date在一年中的日数, 在1到366范围内
+	dayofyear(date)
+	
+#返回date的月份，范围1到12
+	month(date)
+
+#返回date的星期名字
+	dayname(date)
+
+#返回date的月份名字 
+	monthname(date)
+
+#返回date一年中的季度，范围1到4
+	quarter(date)
+	
+#返回date的周数，范围在0到52（星期天是一周的第一天）
+	week(date)
+	#如果first=0，从星期天开始，如果first=1，从星期一开始 
+		week(date,first) 
+
+#返回date的年份，范围在1000到9999
+	year(date) 
+
+#返回time的小时，范围是0到23
+	hour(time) 
+
+#返回time的分钟，范围是0到59
+	minute(time) 
+
+#回来time的秒数，范围是0到59
+	second(time) 
+
+#增加N个月到阶段P（以格式YYMM或YYYYMM)。以格式YYYYMM返回值
+	period_add(P,N) 
+		#注意阶段参数P不是日期值
+
+#返回在时期P1和P2之间月数，P1和P2应该以格式YYMM或YYYYMM
+	period_diff(P1,P2)
+		#注意，时期参数P1和P2不是日期值
+
+#给出一个日期date，返回一个天数
+	to_days(date) 
+		#从0年的天数
+
+#给出一个天数N，返回一个DATE值
+	from_days(N)
+
+#根据format字符串格式化date值
+	date_format(date,format)
+
+#返回unix_timestamp参数所表示的值
+	from_unixtime(unix_timestamp)
+		#以'YYYY-MM-DD HH:MM:SS'或YYYYMMDDHHMMSS格式返回
+		#取决于函数是在一个字符串还是或数字上下文中被使用
+
+#返回表示Unix时间标记的一个字符串，根据format字符串格式化
+	from_unixtime(unix_timestamp,format) 
+		#format可以包含与DATE_FORMAT()函数列出的条目同样的修饰符
+
+#返回seconds参数，变换成小时、分钟和秒
+	sec_to_time(seconds)
+		#值以'HH:MM:SS'或HHMMSS格式化
+		#取决于函数是在一个字符串还是在数字上下文中被使用
+
+#返回time参数，转换成秒
+	time_to_sec(time)
+
+```
+
+表：下列修饰符可以被用在format字符串中用以格式化
+
+| %M   | 月名字(January……December)                      |
+| ---- | ---------------------------------------------- |
+| %W   | 星期名字(Sunday……Saturday)                     |
+| %D   | 有英语前缀的月份的日期(1st, 2nd, 3rd, 等等。） |
+| %Y   | 年, 数字, 4 位                                 |
+| %y   | 年, 数字, 2 位                                 |
+| %a   | 缩写的星期名字(Sun……Sat)                       |
+| %d   | 月份中的天数, 数字(00……31)                     |
+| %e   | 月份中的天数, 数字(0……31)                      |
+| %m   | 月, 数字(01……12)                               |
+| %c   | 月, 数字(1……12)                                |
+| %b   | 缩写的月份名字(Jan……Dec)                       |
+| %j   | 一年中的天数(001……366)                         |
+| %H   | 小时(00……23)                                   |
+| %k   | 小时(0……23)                                    |
+| %h   | 小时(01……12)                                   |
+| %I   | 小时(01……12)                                   |
+| %l   | 小时(1……12)                                    |
+| %i   | 分钟, 数字(00……59)                             |
+| %r   | 时间,12 小时(hh:mm:ss [AP]M)                   |
+| %T   | 时间,24 小时(hh:mm:ss)                         |
+| %S   | 秒(00……59)                                     |
+| %s   | 秒(00……59)                                     |
+| %p   | AM或PM                                         |
+| %w   | 一个星期中的天数(0=Sunday ……6=Saturday ）      |
+| %U   | 星期(0……52), 这里星期天是星期的第一天          |
+| %u   | 星期(0……52), 这里星期一是星期的第一天          |
+| %%   | 一个文字“%”。                                  |
+
+### 	4、其他函数
+
+#### 	语法
+
+```mysql
+#返回当前的数据库名字
+	database()
+
+#返回当前MySQL用户名
+	user()
+	system_user()
+	session_user()
+
+#对字符串计算md5校验和。值作为一个32长的十六进制数字被返回可以
+	md5(string)
+
+#格式化数字X为类似于格式'#,###,###.##'，四舍五入到D为小数
+	format(X,D)
+		#如果D为0，结果将没有小数点和小数部分
+#返回表明MySQL服务器版本的一个字符串
+	version()
+
+#将指定字段的null值替换为指定值
+	ifnull(字段,值)
+```
+
+### 	5、
 
 ## 	八、
