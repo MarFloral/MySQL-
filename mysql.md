@@ -1040,8 +1040,9 @@ select job,sum(sal) s from emp where job<>'SALESMAN' group by job having sum(sal
 
 表：下列修饰符可以被用在format字符串中用以格式化
 
-| %M   | 月名字(January……December)                      |
+| 符号 | 作用                                           |
 | ---- | ---------------------------------------------- |
+| %M   | 月名字(January……December                       |
 | %W   | 星期名字(Sunday……Saturday)                     |
 | %D   | 有英语前缀的月份的日期(1st, 2nd, 3rd, 等等。） |
 | %Y   | 年, 数字, 4 位                                 |
